@@ -10,7 +10,7 @@ import (
 
 	"github.com/daaku/go.httpgzip"
 	"github.com/jmoiron/sqlx"
-	"gopkg.in/cq.v1"
+	_ "gopkg.in/cq.v1"
 	"gopkg.in/cq.v1/types"
 )
 
@@ -60,8 +60,8 @@ func searchHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	query := req.URL.Query()["q"][0]
-	cypher := `MATCH (movie:Movie) 
-				 WHERE movie.title =~ {0} 
+	cypher := `MATCH (movie:Movie)
+				 WHERE movie.title =~ {0}
 				 RETURN movie.title as title, movie.tagline as tagline, movie.released as released`
 	db, err := sqlx.Connect("neo4j-cypher", neo4jURL)
 	if err != nil {
@@ -96,9 +96,9 @@ func movieHandler(w http.ResponseWriter, req *http.Request) {
 				  WITH movie.title as title,
 						 collect({name:person.name,
 						 job:head(split(lower(type(r)),'_')),
-						 role:r.roles}) as cast 
+						 role:r.roles}) as cast
 				  LIMIT 1
-				  UNWIND cast as c 
+				  UNWIND cast as c
 				  RETURN title, c.name as name, c.job as job, c.role as role`
 	db, err := sqlx.Connect("neo4j-cypher", neo4jURL)
 	if err != nil {
